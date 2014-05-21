@@ -5,5 +5,5 @@ install:
   - python bootstrap.py
   - bin/buildout
 script:
-  - cd py-cftpl/py-cftpl/cftpl/tests
+  - cd py-cftpl/cftpl/tests
   - ../../../bin/nosetests
