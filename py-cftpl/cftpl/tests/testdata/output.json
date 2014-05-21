@@ -1,0 +1,112 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09", 
+    "Outputs": {}, 
+    "Description": "CFTPL TEST CASE.",
+    "Resources": {
+        "WebServerASGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup", 
+            "Properties": {
+                "MinSize": "0", 
+                "MaxSize": "0", 
+                "AvailabilityZones": [
+                    "eu-west-1a", 
+                    "eu-west-1b", 
+                    "eu-west-1c"
+                ], 
+                "DesiredCapacity": "0", 
+                "LaunchConfigurationName": {
+                    "Ref": "WebServerLaunchConfig"
+                }
+            }
+        }, 
+        "WebServerLaunchConfig": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration", 
+            "Properties": {
+                "UserData": "IyEvYmluL2Jhc2gKc2V0IC1lIC14CmV4cG9ydCBERUJJQU5fRlJPTlRFTkQ9bm9uaW50ZXJhY3RpdmUKYWRkLWFwdC1yZXBvc2l0b3J5IC15IHBwYTpzYWx0c3RhY2svc2FsdAphcHQtZ2V0IC0teWVzIC0tcXVpZXQgdXBkYXRlCgphcHQtZ2V0IC0teWVzIGluc3RhbGwgZGViY29uZi11dGlscwphcHQtZ2V0IC0teWVzIGluc3RhbGwgc2FsdC1taW5pb24KYXB0LWdldCAtLXllcyB1cGdyYWRlCnByaW50ZiAnXG5zdGFydHVwX3N0YXRlczogaGlnaHN0YXRlXG5tYXN0ZXI6IG1hc3Rlci5kb21haW4ubG9jYWxcblxuZ3JhaW5zOlxuICByb2xlczpcbiAgICAtIHdlYnNlcnZlclxuXG4nID4+IC9ldGMvc2FsdC9taW5pb24KL3NiaW4vcmVzdGFydCBzYWx0LW1pbmlvbg==", 
+                "KeyName": "my_ssh_key", 
+                "SecurityGroups": [
+                    {
+                        "Ref": "WebServerSecurityGroup"
+                    }
+                ], 
+                "InstanceType": "t1.micro", 
+                "ImageId": "ami-896c96fe"
+            }
+        }, 
+        "SOMEDNS": {
+            "Type": "AWS::Route53::RecordSetGroup", 
+            "Properties": {
+                "Comment": "TEST CASE Zone Records", 
+                "HostedZoneName": "test.local.", 
+                "RecordSets": [
+                    {
+                        "ResourceRecords": [
+                            "ghs.google.com."
+                        ], 
+                        "Type": "CNAME", 
+                        "Name": "calendar.test.local.", 
+                        "TTL": "43200"
+                    }, 
+                    {
+                        "ResourceRecords": [
+                            "ghs.google.com."
+                        ], 
+                        "Type": "CNAME", 
+                        "Name": "chat.test.local.", 
+                        "TTL": "43200"
+                    }, 
+                    {
+                        "ResourceRecords": [
+                            "ghs.google.com."
+                        ], 
+                        "Type": "CNAME", 
+                        "Name": "docs.test.local.", 
+                        "TTL": "43200"
+                    }, 
+                    {
+                        "ResourceRecords": [
+                            "ghs.google.com."
+                        ], 
+                        "Type": "CNAME", 
+                        "Name": "mail.test.local.", 
+                        "TTL": "43200"
+                    }, 
+                    {
+                        "ResourceRecords": [
+                            "ghs.google.com."
+                        ], 
+                        "Type": "CNAME", 
+                        "Name": "start.test.local.", 
+                        "TTL": "43200"
+                    }, 
+                    {
+                        "ResourceRecords": [
+                            "5  0 5269 xmpp-server.l.google.com.", 
+                            "20 0 5269 xmpp-server1.l.google.com.", 
+                            "20 0 5269 xmpp-server2.l.google.com.", 
+                            "20 0 5269 xmpp-server3.l.google.com.", 
+                            "20 0 5269 xmpp-server4.l.google.com."
+                        ], 
+                        "Type": "SRV", 
+                        "Name": "_jabber._tcp.test.local.", 
+                        "TTL": "43200"
+                    }
+                ]
+            }
+        }, 
+        "WebServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup", 
+            "Properties": {
+                "SecurityGroupIngress": [
+                    {
+                        "ToPort": "22", 
+                        "IpProtocol": "tcp", 
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "22"
+                    }
+                ], 
+                "GroupDescription": "Enable SSH access on the inbound port"
+            }
+        }
+    }
+}

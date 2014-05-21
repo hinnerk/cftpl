@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CFTPL Example.
+Resources:
+  DemoAutoScalingSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+      - Endpoint: {{ EMAIL }}
+        Protocol: email
+  DemoServerASGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: [eu-west-1a, eu-west-1b, eu-west-1c]
+      LaunchConfigurationName: {Ref: DemoServerLaunchConfig}
+      MinSize: 0
+      MaxSize: 2
+      DesiredCapacity: 0
+      NotificationConfiguration:
+        NotificationTypes:
+          - autoscaling:EC2_INSTANCE_LAUNCH
+          - autoscaling:EC2_INSTANCE_LAUNCH_ERROR
+          - autoscaling:EC2_INSTANCE_TERMINATE
+          - autoscaling:EC2_INSTANCE_TERMINATE_ERROR
+        TopicARN: {Ref: DemoAutoScalingSNSTopic}
+#    UpdatePolicy:
+#      AutoScalingRollingUpdate:
+#        MaxBatchSize: '1'
+#        MinInstancesInService: '1'
+#        PauseTime: PT7M
+  DemoServerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      # IamInstanceProfile: {Ref: DemoServerIAMProfile}
+      ImageId: ami-d66987a1
+      InstanceType: t1.micro
+      UserData: '{{ FILES['salt-installer']|base64 }}'
+      SecurityGroups:
+      - {Ref: DemoServerSecurityGroup}
+  DemoServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access on the inbound port
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 22

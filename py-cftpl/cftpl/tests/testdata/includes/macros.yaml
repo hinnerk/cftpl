@@ -1,0 +1,6 @@
+{% macro cname(name, domain, rr, ttl="43200") %}
+- Name: {{ name }}.{{ domain }}.
+  Type: CNAME
+  TTL: "{{ ttl }}"
+  ResourceRecords: {{ rr }}
+{% endmacro %}

@@ -1,0 +1,51 @@
+{% import "includes/macros.yaml" as macros %}
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CFTPL TEST CASE.
+Resources:
+  SOMEDNS:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: TEST CASE Zone Records
+      HostedZoneName: {{ DOMAIN }}.
+      RecordSets:
+        {% for name in ('calendar', 'chat', 'docs', 'mail', 'start') %}
+        {{ macros.cname(name, DOMAIN, ["ghs.google.com."])|indent(8) }} # manual indention for now....
+        {% endfor %}
+        - Name: _jabber._tcp.{{ DOMAIN }}.
+          Type: SRV
+          TTL: "43200"
+          ResourceRecords:
+            - 5  0 5269 xmpp-server.l.google.com.
+            - 20 0 5269 xmpp-server1.l.google.com.
+            - 20 0 5269 xmpp-server2.l.google.com.
+            - 20 0 5269 xmpp-server3.l.google.com.
+            - 20 0 5269 xmpp-server4.l.google.com.
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access on the inbound port
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 0.0.0.0/0
+  WebServerASGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: [eu-west-1a, eu-west-1b, eu-west-1c]
+      LaunchConfigurationName:
+          Ref: WebServerLaunchConfig
+      MinSize: "0"
+      MaxSize: "0"
+      DesiredCapacity: "0"
+  WebServerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: ami-896c96fe
+      SecurityGroups:
+        - Ref: WebServerSecurityGroup
+      InstanceType: t1.micro
+      KeyName: {{ KEYNAME }}
+      UserData: {{ FILES['user_data_file']|base64 }}
+Outputs: {}
