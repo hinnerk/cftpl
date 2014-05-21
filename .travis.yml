@@ -1,0 +1,9 @@
+language: python
+python:
+  - 2.7
+install:
+  - python bootstrap.py
+  - bin/buildout
+script:
+  - cd py-cftpl/py-cftpl/cftpl/tests
+  - ../../../bin/nosetests
