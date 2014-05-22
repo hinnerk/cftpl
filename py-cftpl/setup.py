@@ -52,14 +52,12 @@ LONG_DESC = 'Templates and Management for AWS CloudFormation.'
 if os.path.isfile(README):
     LONG_DESC = open(README).read()
     if pypandoc:
-        print "CONVERTING README..."
         try:
             output = pypandoc.convert(LONG_DESC, 'rst', format='md')
         except OSError, e:
             print "ERROR: {}".format(e.message)
         else:
             LONG_DESC = output
-            print "CONVERSION SUCCESSFUL!"
 
 tests_require = ['mock', ]
 
@@ -85,6 +83,7 @@ setup(
     author='Hinnerk Haardt, HIT Information-Control GmbH',
     author_email='haardt@information-control.de',
 
+    keywords=['Amazon Web Services', 'CloudFormation', 'AWS'],
     classifiers=[
         'Development Status :: 4 - Beta',
         # 'Development Status :: 5 - Production/Stable',
