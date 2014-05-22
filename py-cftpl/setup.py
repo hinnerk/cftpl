@@ -37,12 +37,34 @@
 import os
 from setuptools import setup, find_packages
 
+
+#
+# Try to convert README.md Markdown to ReStructuredText.
+# This mostly matters for pypi registration, so in most cases failure is just fine.
+#
+try:
+    import pypandoc
+except ImportError:
+    pypandoc = None
+
+README = os.path.join('..', 'README.md')
+LONG_DESC = 'Templates and Management for AWS CloudFormation.'
+if os.path.isfile(README):
+    LONG_DESC = open(README).read()
+    if pypandoc:
+        try:
+            output = pypandoc.convert(LONG_DESC, 'rst', format='md')
+        except OSError, e:
+            print "ERROR: {}".format(e.message)
+        else:
+            LONG_DESC = output
+
 tests_require = ['mock', ]
 
 setup(
     name="cftpl",
     description="Templates and Management for AWS CloudFormation.",
-    long_description=open('../README.md').read(),
+    long_description=LONG_DESC,
     version="1.0",
 
     install_requires=['setuptools', 'boto', 'keyring', 'jinja2', 'PyYAML'] + tests_require,
@@ -61,6 +83,7 @@ setup(
     author='Hinnerk Haardt, HIT Information-Control GmbH',
     author_email='haardt@information-control.de',
 
+    keywords=['Amazon Web Services', 'CloudFormation', 'AWS'],
     classifiers=[
         'Development Status :: 4 - Beta',
         # 'Development Status :: 5 - Production/Stable',
