@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/hinnerk/cftpl.svg?branch=master)](https://travis-ci.org/hinnerk/cftpl)
 
 
-* **`cftpl`**: A simple Python library to build and manage CloudFormation Stacks. STacks are built using templates and can use variables, loops and reuse existing code.
+* **`cftpl`**: A simple Python library to build and manage CloudFormation Stacks. Stacks are built using templates and can use variables, loops and reuse existing code.
 * **`cfmgr`:** The executable to manage CloudFormation Stacks from the command line. Based on `cftpl`, has actual password management.
 
 
