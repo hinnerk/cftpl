@@ -25,7 +25,7 @@
 ## The Lazy:
 
 ```
-sudo pip install cftpl
+pip install cftpl
 ```
 
 `cfmgr` should be available now:
