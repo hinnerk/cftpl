@@ -53,10 +53,20 @@ def run():
     operation = get_args(1)
     config_file = get_args(2)
     config = get_settings(config_file)
-    password = get_password(config)
 
     try:
-        if not operation or operation == 'list':
+        if not operation :
+            print(helptext)
+            sys.exit(0)
+        elif operation in ('convert'):
+            convert_json_to_yaml(config)
+            sys.exit(0)
+        elif operation in ('show', 'display'):
+            display_yaml(config)
+            sys.exit(0)
+
+        password = get_password(config)
+        if operation == 'list':
             list_stacks(config, password)
             sys.exit(0)
         elif operation in ('create', 'make', 'update', 'run', 'start'):
@@ -65,14 +75,8 @@ def run():
         elif operation in ('norun', 'test'):
             create_or_update(config, password, run=False)
             sys.exit(0)
-        elif operation in ('show', 'display'):
-            display_yaml(config)
-            sys.exit(0)
         elif operation in ('kill', 'destroy', 'eradicate', 'delete', 'erase', 'inhume'):
             delete_stack(config, password)
-            sys.exit(0)
-        elif operation in ('convert'):
-            convert_json_to_yaml(config)
             sys.exit(0)
         else:
             print(helptext)
